@@ -7,36 +7,59 @@ import com.nitaicharan.udemy_restapiawrestantn2.constants.Auth;
 import com.nitaicharan.udemy_restapiawrestantn2.constants.EndPoints;
 import com.nitaicharan.udemy_restapiawrestantn2.constants.Path;
 
-import org.junit.BeforeClass;
+import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
-import io.restassured.RestAssured;
 import io.restassured.specification.RequestSpecification;
-import io.restassured.specification.ResponseSpecification;
 
 public class UserTimelineTest {
 
+    private String tweetId;
     private RequestSpecification requestSpecification;
-    private ResponseSpecification responseSpecification;
 
     @BeforeClass
     public void setup() {
         requestSpecification = RestUtilities.getRequestSpecification();
-        requestSpecification.queryParam("user_id", "apiautomation");
         requestSpecification.basePath(Path.STATUSES);
-
-        responseSpecification = RestUtilities.getRespondeSpecification();
     }
 
     @Test
-    public void readTweets1() {
-        RestAssured.given()//
-                .spec(requestSpecification)//
-                .when()//
-                .get(EndPoints.STATUSES_USER_TIMELINE)//
-                .then()//
-                .spec(responseSpecification)//
-                .body("user.screen_name", hasItem(Auth.TWITTER_USER_ID));
+    public void postTweet() {
+        RestUtilities.getRespondeSpecification();
+        RestUtilities.setEndPoint(EndPoints.STATUSES_TWEET_POST);
+
+        var response = RestUtilities.getResponse(//
+                RestUtilities.createQueryParam(requestSpecification, "status", "My First Tweet #first")//
+                , "post"//
+                , false//
+        );
+
+        this.tweetId = response.path("id_str");
     }
 
+    @Test(dependsOnMethods = { "postTweet" })
+    public void readTweets() {
+        requestSpecification.queryParam("user_id", Auth.TWITTER_USER_ID);
+
+        RestUtilities.getRespondeSpecification();
+        RestUtilities.setEndPoint(EndPoints.STATUSES_USER_TIMELINE);
+
+        RestUtilities.getResponse(//
+                RestUtilities.createQueryParam(requestSpecification, "count", "1")//
+                , "get"//
+                , false//
+        ).then().body("user.screen_name", hasItem(Auth.TWITTER_USER_ID));
+    }
+
+    @Test(dependsOnMethods = { "readTweets" })
+    public void deleteTweet() {
+        RestUtilities.getRespondeSpecification();
+        RestUtilities.setEndPoint(EndPoints.STATUSES_TWEET_DESTROY);
+
+        RestUtilities.getResponse(//
+                RestUtilities.createQueryParam(requestSpecification, "id", this.tweetId)//
+                , "post"//
+                , false//
+        );
+    }
 }
