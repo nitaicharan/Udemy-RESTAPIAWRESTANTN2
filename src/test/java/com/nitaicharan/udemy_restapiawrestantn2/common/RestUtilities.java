@@ -11,13 +11,17 @@ import com.nitaicharan.udemy_restapiawrestantn2.constants.Path;
 import io.restassured.RestAssured;
 import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.builder.ResponseSpecBuilder;
+import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
 import io.restassured.specification.ResponseSpecification;
 
 public class RestUtilities {
     public static String ENDPOINT;
     public static RequestSpecBuilder REQUEST_BUILDER;
+    public static RequestSpecification REQUEST_SPECIFICATION;
+
     public static ResponseSpecBuilder RESPONSE_BUILDER;
+    public static ResponseSpecification RESPONSE_SPECIFICATION;
 
     public static void setEndPoint(String endpoint) {
         ENDPOINT = endpoint;
@@ -35,7 +39,8 @@ public class RestUtilities {
                 .setBaseUri(Path.BASE_URL)//
                 .setAuth(authenticationScheme);
 
-        return REQUEST_BUILDER.build();
+        REQUEST_SPECIFICATION = REQUEST_BUILDER.build();
+        return REQUEST_SPECIFICATION;
     }
 
     public static ResponseSpecification getRespondeSpecification() {
@@ -44,7 +49,8 @@ public class RestUtilities {
                 .expectStatusCode(200)//
                 .expectResponseTime(lessThan(3L), TimeUnit.SECONDS);//
 
-        return RESPONSE_BUILDER.build();
+        RESPONSE_SPECIFICATION = RESPONSE_BUILDER.build();
+        return RESPONSE_SPECIFICATION;
     }
 
     public static RequestSpecification createQueryParam(RequestSpecification r, String param, String value) {
@@ -54,4 +60,45 @@ public class RestUtilities {
     public static RequestSpecification createQueryParam(RequestSpecification r, Map<String, String> queryMap) {
         return r.queryParams(queryMap);
     }
+
+    public static RequestSpecification createPathParam(RequestSpecification r, String param, String value) {
+        return r.pathParam(param, value);
+    }
+
+    public static Response getResponse() {
+        return RestAssured.given().get(ENDPOINT);
+    }
+
+    public static Response getResponse(RequestSpecification r, String type, boolean hasToLog) {
+        REQUEST_SPECIFICATION.spec(r);
+
+        Response response = null;
+        if ("get".equals(type)) {
+            response = RestAssured.given().spec(REQUEST_SPECIFICATION).get(ENDPOINT);
+        }
+
+        else if ("post".equals(type)) {
+            response = RestAssured.given().spec(REQUEST_SPECIFICATION).post(ENDPOINT);
+        }
+
+        else if ("put".equals(type)) {
+            response = RestAssured.given().spec(REQUEST_SPECIFICATION).put(ENDPOINT);
+        }
+
+        else if ("delete".equals(type)) {
+            response = RestAssured.given().spec(REQUEST_SPECIFICATION).delete(ENDPOINT);
+        }
+
+        else {
+            System.out.println("Type is not suported");
+        }
+
+        if (hasToLog) {
+            response.then().log().all();
+        }
+
+        response.then().spec(RESPONSE_SPECIFICATION);
+        return response;
+    }
+
 }
