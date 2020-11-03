@@ -11,6 +11,9 @@ import com.nitaicharan.udemy_restapiawrestantn2.constants.Path;
 import io.restassured.RestAssured;
 import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.builder.ResponseSpecBuilder;
+import io.restassured.http.ContentType;
+import io.restassured.path.json.JsonPath;
+import io.restassured.path.xml.XmlPath;
 import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
 import io.restassured.specification.ResponseSpecification;
@@ -99,6 +102,22 @@ public class RestUtilities {
 
         response.then().spec(RESPONSE_SPECIFICATION);
         return response;
+    }
+
+    public static JsonPath getJsonPath(Response res) {
+        return new JsonPath(res.asString());
+    }
+
+    public static XmlPath getXmlPath(Response res) {
+        return new XmlPath(res.asString());
+    }
+
+    public static void resetBasePath() {
+        RestAssured.basePath = null;
+    }
+
+    public static void setContentType(ContentType type) {
+        RestAssured.basePath = null;
     }
 
 }
