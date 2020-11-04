@@ -1,9 +1,8 @@
 <!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd">
-<suite name="regression">
+<suite name="usertimeline">
     <test name="RestAssured Test">
         <classes>
             <class name="com.nitaicharan.udemy_restapiawrestantn2.statuses.UserTimelineTest"></class>
-            <class name="com.nitaicharan.udemy_restapiawrestantn2.statuses.TwiiterWorkflowTest"></class>
         </classes>
     </test>
 </suite>
