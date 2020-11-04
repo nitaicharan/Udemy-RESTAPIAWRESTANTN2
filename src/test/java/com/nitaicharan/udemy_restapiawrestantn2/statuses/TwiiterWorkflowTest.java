@@ -1,9 +1,8 @@
 package com.nitaicharan.udemy_restapiawrestantn2.statuses;
 
-import static org.hamcrest.Matchers.hasItem;
+import static org.hamcrest.Matchers.equalTo;
 
 import com.nitaicharan.udemy_restapiawrestantn2.common.RestUtilities;
-import com.nitaicharan.udemy_restapiawrestantn2.constants.Auth;
 import com.nitaicharan.udemy_restapiawrestantn2.constants.EndPoints;
 import com.nitaicharan.udemy_restapiawrestantn2.constants.Path;
 
@@ -12,8 +11,7 @@ import org.testng.annotations.Test;
 
 import io.restassured.specification.RequestSpecification;
 
-public class UserTimelineTest {
-
+public class TwiiterWorkflowTest {
     private String tweetId;
     private RequestSpecification requestSpecification;
 
@@ -34,32 +32,31 @@ public class UserTimelineTest {
                 , false//
         );
 
-        this.tweetId = response.path("id_str");
+        tweetId = response.path("id_str");
     }
 
     @Test(dependsOnMethods = { "postTweet" })
     public void readTweets() {
-        requestSpecification.queryParam("user_id", Auth.TWITTER_USER_ID);
-
         RestUtilities.getRespondeSpecification();
-        RestUtilities.setEndPoint(EndPoints.STATUSES_USER_TIMELINE);
+        RestUtilities.setEndPoint(EndPoints.STATUSES_TWEET_READ_SINGLE);
 
         RestUtilities.getResponse(//
-                RestUtilities.createQueryParam(requestSpecification, "count", "1")//
+                RestUtilities.createQueryParam(requestSpecification, "id", tweetId)//
                 , "get"//
                 , false//
-        ).then().body("user.screen_name", hasItem(Auth.TWITTER_USER_ID));
+        ).then().body("id_str", equalTo(tweetId));
     }
 
     @Test(dependsOnMethods = { "readTweets" })
     public void deleteTweet() {
         RestUtilities.getRespondeSpecification();
-        RestUtilities.setEndPoint(EndPoints.STATUSES_TWEET_DESTROY_QUERY);
+        RestUtilities.setEndPoint(EndPoints.STATUSES_TWEET_DESTROY_PATH);
 
         RestUtilities.getResponse(//
-                RestUtilities.createQueryParam(requestSpecification, "id", this.tweetId)//
+                RestUtilities.createPathParam(requestSpecification, "id", tweetId)//
                 , "post"//
                 , false//
         );
     }
+
 }
