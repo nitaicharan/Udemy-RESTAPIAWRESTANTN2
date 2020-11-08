@@ -23,7 +23,7 @@ This project was part of the Udemy course "Rest API Automation With Rest Assured
 - [Certificate][certificate-url]
 
 ### Certificate
-This certificate above verifies that [Nitai Charan][udemy-url] successfully completed the course [Rest API Automation With Rest Assured - Novice To Ninja][course-url] on ??/??/???? as taught by [Lets Kode It][instructor-url] on Udemy. The certificate indicates the entire course was completed as validated by the student.
+This certificate above verifies that [Nitai Charan][udemy-url] successfully completed the course [Rest API Automation With Rest Assured - Novice To Ninja][course-url] on 10/22/2020 as taught by [Lets Kode It][instructor-url] on Udemy. The certificate indicates the entire course was completed as validated by the student.
 
 <p align="center">
   <img src="CERTIFICATE.jpg">
@@ -58,7 +58,7 @@ git push origin `git subtree split --prefix target/site/ master`:gh-pages --forc
 <!-- ALIES README -->
 [course-url]: https://udemy.com/course/rest-api-automation
 [instructor-url]: https://udemy.com/user/criticalthinking
-[certificate-url]: #
+[certificate-url]: https://ude.my/UC-e5b47197-70eb-4bab-b46d-2449cfad0c07
 
 <!-- CONTACT SHIELDS -->
 
